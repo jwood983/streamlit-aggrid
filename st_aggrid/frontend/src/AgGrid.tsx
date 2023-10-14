@@ -216,7 +216,7 @@ class AgGrid<S = {}> extends React.Component<ComponentProps, S> {
     private gridOptions: any
     private gridContainerRef: React.RefObject<HTMLDivElement>
     private isGridAutoHeightOn: boolean
-    private fitColumnsDone: boolean = false
+    private fitColumnsFirstTime: boolean = true
     private renderedGridHeightPrevious: number = 0
 
     constructor(props: any) {
@@ -300,9 +300,7 @@ class AgGrid<S = {}> extends React.Component<ComponentProps, S> {
 
     private DownloadAsExcelIfRequested() {
         if (this.api) {
-            
-            if (
-                this.props.args.excel_export_mode === "MULTIPLE_SHEETS" &&
+            if (this.props.args.excel_export_mode === "MULTIPLE_SHEETS" &&
                 this.props.args.excel_export_multiple_sheets
             ) {
                 let params = this.props.args.excel_export_multiple_sheets
@@ -354,8 +352,8 @@ class AgGrid<S = {}> extends React.Component<ComponentProps, S> {
             Streamlit.setFrameHeight(renderedGridHeight)
             // Run fitColumns only once when it first becomes visible with height > 0
             // This should solve auto_size_mode issues with st.tabs
-            if (!this.fitColumnsDone) {
-                this.fitColumnsDone = true
+            if (this.fitColumnsFirstTime) {
+                this.fitColumnsFirstTime = false
                 this.fitColumns()
             }
         }
